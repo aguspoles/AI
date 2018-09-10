@@ -58,12 +58,16 @@ public class PlayerBehaviour : MonoBehaviour {
 
         if (playerStateMachine.GetState () == (int) STATES.IDLE) {
             transform.RotateAround (transform.position, Vector3.up, 90 * Time.deltaTime);
-        } else if (playerStateMachine.GetState () == (int) STATES.GO_TO_MINE) {
+        }
+
+        else if (playerStateMachine.GetState () == (int) STATES.GO_TO_MINE) {
             float step = speed * Time.deltaTime;
             transform.position = Vector3.MoveTowards (transform.position, mines[0].transform.position, step);
             if (transform.position == mines[0].transform.position)
                 playerStateMachine.SetEvent ((int) EVENTS.ARRIVE_TO_MINE);
-        } else if (playerStateMachine.GetState () == (int) STATES.MINE) {
+        } 
+
+        else if (playerStateMachine.GetState () == (int) STATES.MINE) {
             float amountMined = miningStep * Time.deltaTime;
             goldInPocket += amountMined;
             if (goldInPocket >= goldPocketSize) {
@@ -71,13 +75,17 @@ public class PlayerBehaviour : MonoBehaviour {
                 mines[0].GetComponent<GoldMine> ().goldLeft -= goldPocketSize;
                 playerStateMachine.SetEvent ((int) EVENTS.POCKETS_FULL);
             }
-        } else if (playerStateMachine.GetState () == (int) STATES.RETURN_BASE) {
+        } 
+
+        else if (playerStateMachine.GetState () == (int) STATES.RETURN_BASE) {
             float step = speed * Time.deltaTime;
             transform.position = Vector3.MoveTowards (transform.position, home.transform.position, step);
             if (transform.position == home.transform.position) {
                 playerStateMachine.SetEvent ((int) EVENTS.ARRIVE_TO_HOME);
             }
-        } else if (playerStateMachine.GetState () == (int) STATES.LEAVE_GOLD) {
+        }
+         
+        else if (playerStateMachine.GetState () == (int) STATES.LEAVE_GOLD) {
             goldInPocket = 0;
             playerStateMachine.SetEvent ((int) EVENTS.LEAVE_GOLD);
         }

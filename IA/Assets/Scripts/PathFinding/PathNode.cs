@@ -6,11 +6,13 @@ public class PathNode {
 
 	public string id;
 	public string name;
-	public PathNode parent;
-	public List<PathNode> adyacentsNodes;
+	public Vector3 position;
+	//public PathNode parent;
+	//public List<PathNode> adyacentsNodes;
 
-	public PathNode(string id, string name){
+	public PathNode(string id, string name, Vector3 pos){
 		this.id = id;
 		this.name = name;
+		this.position = pos;
 	}
 }

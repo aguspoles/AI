@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TestDijkstraAlgorithm {
 
-    private List<PathNode> nodes;
+   /* private List<PathNode> nodes;
     private List<PathEdge> edges;
 
     public void testExcute() {
@@ -44,5 +44,5 @@ public class TestDijkstraAlgorithm {
             int duration) {
         PathEdge lane = new PathEdge(laneId, nodes[sourceLocNo], nodes[destLocNo], duration );
         edges.Add(lane);
-    }
+    }*/
 }
