@@ -6,8 +6,8 @@ public class DijkstraAlgorithm  {
 
 	private List<PathNode> nodes;
     private List<PathEdge> edges;
-    private List<PathNode> settledNodes;
-    private List<PathNode> unSettledNodes;
+    private List<PathNode> exploredNodes;
+    private List<PathNode> unexploredNodes;
     private Dictionary<PathNode, PathNode> predecessors;
     private Dictionary<PathNode, int> distance;
 
@@ -17,16 +17,17 @@ public class DijkstraAlgorithm  {
     }
 
 	public void execute(PathNode source) {
-        settledNodes = new List<PathNode>();
-        unSettledNodes = new List<PathNode>();
+        exploredNodes = new List<PathNode>();
+        unexploredNodes = new List<PathNode>();
         distance = new Dictionary<PathNode, int>();
         predecessors = new Dictionary<PathNode, PathNode>();
+
         distance.Add(source, 0);
-        unSettledNodes.Add(source);
-        while (unSettledNodes.Count > 0) {
-            PathNode node = getMinimum(unSettledNodes);
-            settledNodes.Add(node);
-            unSettledNodes.Remove(node);
+        unexploredNodes.Add(source);
+        while (unexploredNodes.Count > 0) {
+            PathNode node = getMinimum(unexploredNodes);
+            exploredNodes.Add(node);
+            unexploredNodes.Remove(node);
             findMinimalDistances(node);
         }
     }
@@ -39,7 +40,7 @@ public class DijkstraAlgorithm  {
                 distance.Add(target, getShortestDistance(node)
                         + getDistance(node, target));
                 predecessors.Add(target, node);
-                unSettledNodes.Add(target);
+                unexploredNodes.Add(target);
             }
         }
 
@@ -81,10 +82,11 @@ public class DijkstraAlgorithm  {
     }
 
     private bool isSettled(PathNode node) {
-        return settledNodes.Contains(node);
+        return exploredNodes.Contains(node);
     }
 
     private int getShortestDistance(PathNode destination) {
+        //Debug.Log(distance);
         int d = distance[destination];
         if (d == null) {
             return int.MaxValue;
