@@ -2,117 +2,101 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DijkstraAlgorithm  {
+namespace AI
+{
 
-	private List<PathNode> nodes;
-    private List<PathEdge> edges;
-    private List<PathNode> exploredNodes;
-    private List<PathNode> unexploredNodes;
-    private Dictionary<PathNode, PathNode> predecessors;
-    private Dictionary<PathNode, int> distance;
+    public class DijkstraAlgorithm
+    {
+        public List<Node> nodes;
+        private List<Node> exploredNodes;
+        private List<Node> unexploredNodes;
 
-    public DijkstraAlgorithm(PathGraph graph) {
-        this.nodes = new List<PathNode>(graph.nodes);
-        this.edges = new List<PathEdge>(graph.edges);
-    }
+        private Dictionary<Node, float> distance;
 
-	public void execute(PathNode source) {
-        exploredNodes = new List<PathNode>();
-        unexploredNodes = new List<PathNode>();
-        distance = new Dictionary<PathNode, int>();
-        predecessors = new Dictionary<PathNode, PathNode>();
-
-        distance.Add(source, 0);
-        unexploredNodes.Add(source);
-        while (unexploredNodes.Count > 0) {
-            PathNode node = getMinimum(unexploredNodes);
-            exploredNodes.Add(node);
-            unexploredNodes.Remove(node);
-            findMinimalDistances(node);
+        public DijkstraAlgorithm()
+        {
         }
-    }
 
-	private void findMinimalDistances(PathNode node) {
-        List<PathNode> adjacentNodes = getNeighbors(node);
-        foreach(PathNode target in adjacentNodes) {
-            if (getShortestDistance(target) > getShortestDistance(node)
-                    + getDistance(node, target)) {
-                distance.Add(target, getShortestDistance(node)
-                        + getDistance(node, target));
-                predecessors.Add(target, node);
-                unexploredNodes.Add(target);
+        public void Execute(Node origin)
+        {
+            unexploredNodes = new List<Node>();
+            exploredNodes = new List<Node>();
+            distance = new Dictionary<Node, float>();
+
+            distance.Add(origin, 0);
+            unexploredNodes.Add(origin);
+            while (unexploredNodes.Count > 0)
+            {
+                Node node = getMinimum(unexploredNodes);
+                exploredNodes.Add(node);
+                unexploredNodes.Remove(node);
+                findMinimalDistances(node);
             }
         }
 
-    }
+        private void findMinimalDistances(Node node)
+        {
+            List<Node> neighbors = node.neighborsNodes;
+            foreach (Node target in neighbors)
+            {
+                if (getShortestDistance(target) > getShortestDistance(node)
+                        + getDistance(node, target))
+                {
+                    distance.Add(target, getShortestDistance(node)
+                            + getDistance(node, target));
 
-    private int getDistance(PathNode node, PathNode target) {
-        foreach (PathEdge edge in edges) {
-            if (edge.origin == node
-                    && edge.destination == target) {
-                return edge.cost;
-            }
-        }
-        throw new System.Exception("Should not happen");
-    }
-
-	private List<PathNode> getNeighbors(PathNode node) {
-        List<PathNode> neighbors = new List<PathNode>();
-        foreach (PathEdge edge in edges) {
-            if (edge.origin == node
-                    && !isSettled(edge.destination)) {
-                neighbors.Add(edge.destination);
-            }
-        }
-        return neighbors;
-    }
-
-    private PathNode getMinimum(List<PathNode> nodes) {
-        PathNode minimum = null;
-        foreach (PathNode node in nodes) {
-            if (minimum == null) {
-                minimum = node;
-            } else {
-                if (getShortestDistance(node) < getShortestDistance(minimum)) {
-                    minimum = node;
+                    unexploredNodes.Add(target);
                 }
             }
+
         }
-        return minimum;
+
+        private float getDistance(Node node, Node target)
+        {
+            return Mathf.Abs(Vector3.Distance(node.position, target.position));
+        }
+
+        private Node getMinimum(List<Node> nodes)
+        {
+            Node minimum = null;
+            foreach (Node node in nodes)
+            {
+                if (minimum == null)
+                {
+                    minimum = node;
+                }
+                else
+                {
+                    if (getShortestDistance(node) < getShortestDistance(minimum))
+                    {
+                        minimum = node;
+                    }
+                }
+            }
+            return minimum;
+        }
+
+        private float getShortestDistance(Node destination)
+        {
+            //Debug.Log(distance);
+            float d = distance[destination];
+            if (d == null)
+            {
+                return float.MaxValue;
+            }
+            else
+            {
+                return d;
+            }
+        }
+
+
+        public List<Node> getPath(Node target)
+        {
+            List<Node> path = new List<Node>();
+
+            return path;
+        }
     }
 
-    private bool isSettled(PathNode node) {
-        return exploredNodes.Contains(node);
-    }
-
-    private int getShortestDistance(PathNode destination) {
-        //Debug.Log(distance);
-        int d = distance[destination];
-        if (d == null) {
-            return int.MaxValue;
-        } else {
-            return d;
-        }
-    }
-
-    /*
-     * This method returns the path from the source to the selected target and
-     * NULL if no path exists
-     */
-    public List<PathNode> getPath(PathNode target) {
-        List<PathNode> path = new List<PathNode>();
-        PathNode step = target;
-        // check if a path exists
-        if (predecessors[step] == null) {
-            return null;
-        }
-        path.Add(step);
-        while (predecessors[step] != null) {
-            step = predecessors[step];
-            path.Add(step);
-        }
-        // Put it into the correct order
-		path.Reverse();
-        return path;
-    }
 }
