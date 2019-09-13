@@ -29,13 +29,14 @@ namespace AI {
                     if(hit.collider.tag == "Floor")
                     {
                         Node node = GetNearestNode(hit.point);
-                        dijkstra.Execute(node);
-                        currentPath = dijkstra.getPath(node);
+                        //dijkstra.Execute(node);
+                        //currentPath = dijkstra.getPath(node);
                     }
                 }
             }
 
-            GoToPoint(currentPath);
+            if(currentPath != null)
+                GoToPoint(currentPath);
         }
 
         Node GetNearestNode(Vector3 pos)

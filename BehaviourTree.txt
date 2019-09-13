@@ -1,0 +1,19 @@
+Behaviour tree:
+
+Node States:
+-None
+-Runing
+-Ok
+-Fail
+
+Node Types:
+-Action Node: leaf node that executes an action (move to positio, attack, etc), None, Runing, Ok, Fail return states.
+-Conditional Node: ask questions, Ok and Fail return states only.
+-Logic Nodes: can have children of type conditionals.
+-Decorator Node: used to modifie a child node (i.e. negate the return value of a conditional node).
+-Sequence Node: run children nodes in sequence until one returns false.
+-Selector Node: run childern until finds one that returns true.
+
+Nodes With Children: Logic Node, Decorator Node, Sequence Node, Selector Node.
+
+Node Leaf: Action Node, Condition Node.

@@ -17,35 +17,51 @@ namespace AI
         {
         }
 
-        public void Execute(Node origin)
+        public List<Node> Execute(Node origin, Node target)
         {
+            origin.parent = null;
             unexploredNodes = new List<Node>();
             exploredNodes = new List<Node>();
             distance = new Dictionary<Node, float>();
 
             distance.Add(origin, 0);
             unexploredNodes.Add(origin);
+
             while (unexploredNodes.Count > 0)
             {
-                Node node = getMinimum(unexploredNodes);
-                exploredNodes.Add(node);
-                unexploredNodes.Remove(node);
-                findMinimalDistances(node);
+                Node current = getMinimum(unexploredNodes);
+                if (current == target)
+                    return GetPath(current);
+
+                exploredNodes.Add(current);
+                unexploredNodes.Remove(current);
+
+                findMinimalDistances(current);
             }
+
+            return null;
         }
 
         private void findMinimalDistances(Node node)
         {
             List<Node> neighbors = node.neighborsNodes;
-            foreach (Node target in neighbors)
-            {
-                if (getShortestDistance(target) > getShortestDistance(node)
-                        + getDistance(node, target))
-                {
-                    distance.Add(target, getShortestDistance(node)
-                            + getDistance(node, target));
 
-                    unexploredNodes.Add(target);
+            foreach (Node neighbor in neighbors)
+            {
+                if (exploredNodes.Contains(neighbor))
+                    continue;
+
+                if (getShortestDistance(neighbor) > getShortestDistance(node)
+                        + getDistance(node, neighbor))
+                {
+                    distance.Add(neighbor, getShortestDistance(node)
+                            + getDistance(node, neighbor));
+
+                    if (!unexploredNodes.Contains(neighbor))
+                    {
+                        unexploredNodes.Add(neighbor);
+                        neighbor.parent = node;
+                    }
                 }
             }
 
@@ -91,9 +107,18 @@ namespace AI
         }
 
 
-        public List<Node> getPath(Node target)
+        public List<Node> GetPath(Node target)
         {
             List<Node> path = new List<Node>();
+
+            path.Add(target);
+
+            Node n = target;
+            while(n.parent != null)
+            {
+                path.Add(n.parent);
+                n = n.parent;
+            }
 
             return path;
         }
